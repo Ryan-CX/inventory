@@ -5,7 +5,7 @@ const EditItem = ({ item }) => {
 	const [name, setName] = useState(item.name);
 	const [description, setDescription] = useState(item.description);
 	const [price, setPrice] = useState(item.price);
-	const [amount, setAmount] = useState(item.amount);
+	const [quantity, setQuantity] = useState(item.quantity);
 
 	//input change handlers
 	const handleNameChange = (event) => {
@@ -17,11 +17,11 @@ const EditItem = ({ item }) => {
 	const handlePriceChange = (event) => {
 		setPrice(event.target.value);
 	};
-	const handleAmountChange = (event) => {
-		setAmount(event.target.value);
+	const handleQuantityChange = (event) => {
+		setQuantity(event.target.value);
 	};
 
-	const toggleModal = () => {
+	const toggle = () => {
 		setShow(!show);
 	};
 
@@ -29,16 +29,16 @@ const EditItem = ({ item }) => {
 	const updateItem = async (event) => {
 		if (
 			!isNaN(price) &&
-			!isNaN(amount) &&
+			!isNaN(quantity) &&
 			parseInt(price) >= 0 &&
-			parseInt(amount) >= 0
+			parseInt(quantity) >= 0
 		) {
 			try {
 				const body = {
 					name,
 					description,
 					price,
-					amount,
+					quantity,
 				};
 				const response = await fetch(
 					`http://localhost:5000/items/${item._id}`,
@@ -50,20 +50,20 @@ const EditItem = ({ item }) => {
 						body: JSON.stringify(body),
 					}
 				);
-				toggleModal();
+				toggle();
 			} catch (error) {
 				console.error(error.message);
 			}
 		} else {
 			event.preventDefault();
-			alert('Please enter a valid number for price and amount');
+			alert('Please enter a valid number for price and quantity');
 		}
 	};
 
 	return (
 		<div>
-			<div className={show ? 'modal display-block' : 'modal display-none'}>
-				<section className='modal-main'>
+			<div className={show ? 'toggle display-block' : 'toggle display-none'}>
+				<section className='toggle-main'>
 					<h3>Update Item</h3>
 					<form onSubmit={updateItem}>
 						<input
@@ -89,17 +89,17 @@ const EditItem = ({ item }) => {
 						/>
 						<input
 							type='text'
-							placeholder='Amount'
-							value={amount}
-							onChange={handleAmountChange}
+							placeholder='quantity'
+							value={quantity}
+							onChange={handleQuantityChange}
 							required
 						/>
 						<input type='submit' value='Update Item' />
 					</form>
-					<button onClick={toggleModal}>Cancel</button>
+					<button onClick={toggle}>Cancel</button>
 				</section>
 			</div>
-			<button onClick={toggleModal}>Edit</button>
+			<button onClick={toggle}>Edit</button>
 		</div>
 	);
 };

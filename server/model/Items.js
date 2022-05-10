@@ -17,6 +17,10 @@ const newItemSchema = new mongoose.Schema(
 			type: Number,
 			required: true,
 		},
+		comment: {
+			type: String,
+			required: false,
+		},
 	},
 	{
 		timestamps: true,

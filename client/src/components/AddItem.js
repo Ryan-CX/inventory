@@ -54,14 +54,14 @@ const InputItem = () => {
 			setQuantity('');
 		} else {
 			event.preventDefault();
-			alert('Please enter a valid number for price and amount');
+			alert('Invalid input');
 		}
 	};
 
 	return (
-		<div>
+		<div className='add'>
 			<h3>Add New Item</h3>
-			<form onSubmit={addItem}>
+			<form onSubmit={addItem} className='form'>
 				<input
 					type='text'
 					placeholder='Name'

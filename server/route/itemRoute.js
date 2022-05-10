@@ -53,7 +53,6 @@ router.put('/items/:id', async (req, res) => {
 });
 
 //delete item by id
-
 router.delete('/items/:id', async (req, res) => {
 	try {
 		const deletedItem = await Item.findByIdAndDelete(req.params.id);

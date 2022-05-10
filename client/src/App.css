@@ -1,17 +1,13 @@
 .App {
 	text-align: center;
-}
-
-.App-header {
 	background-color: #6b90db;
 	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	font-size: calc(10px + 1vmin);
 	color: white;
 }
+
 table,
 thead,
 tbody,
@@ -23,9 +19,28 @@ td {
 .table {
 	display: flex;
 	flex-direction: column;
+	width: 50%;
+	margin: auto;
+}
+.add {
+	display: flex;
+	flex-direction: column;
+	width: auto;
+}
+.form {
+	display: flex;
+	flex-direction: column;
+
+	align-items: center;
+}
+.form input {
+	width: 30%;
+	text-align: center;
+	margin: 10px auto;
+	width: 300px;
 }
 
-.modal {
+.toggle {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -34,7 +49,7 @@ td {
 	background: rgba(0, 0, 0, 0.6);
 }
 
-.modal .modal-main {
+.toggle .toggle-main {
 	position: fixed;
 	background-color: #6b90db;
 	width: 800px;
