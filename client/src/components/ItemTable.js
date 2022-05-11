@@ -1,59 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import EditItem from './EditItem';
+const axios = require('axios');
 
 const ItemTable = () => {
 	const [items, setItems] = useState([]);
-	const [deleteItems, setDeleteItems] = useState([]);
-	const [comment, setComment] = useState('');
-
-	const handleCommentChange = (event) => {
-		setComment(event.target.value);
-	};
+	const [itemsToShip, setItemsToShip] = useState([]);
 
 	//get request to get all items
 	const getItems = async () => {
 		try {
-			const response = await fetch('http://localhost:5000/items');
-			const data = await response.json();
-			setItems(data);
+			const response = await axios.get('http://localhost:5000/items');
+			setItems(response.data);
 		} catch (error) {
 			console.error(error.message);
 		}
 	};
 
-	//delete request to delete item
+	//delete request to delete item, and add deleted item to deleteItems array
 	const deleteItem = async (id) => {
 		try {
-			const response = await fetch(`http://localhost:5000/items/${id}`, {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			});
-			// add deleted item to deleteItems array
-			setDeleteItems([...deleteItems, items.find((item) => item._id === id)]);
-			//add comment input to item's database's comment field
-			const body = {
-				comment,
-			};
-			const response2 = await fetch(`http://localhost:5000/items/${id}`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(body),
-			});
+			const response = await axios.delete(`http://localhost:5000/items/${id}`);
 
 			getItems();
 		} catch (error) {
 			console.error(error.message);
 		}
-	};
-
-	//use undo function to add deleted item back to items array
-	const undo = () => {
-		setItems([...items, ...deleteItems]);
-		setDeleteItems([]);
 	};
 
 	//get all items on mount
@@ -74,8 +45,8 @@ const ItemTable = () => {
 							<th>Price</th>
 							<th>Quantity</th>
 							<th>Edit</th>
-							<th>Deletion Comment</th>
 							<th>Delete</th>
+							<th>Add to shipment</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -88,42 +59,68 @@ const ItemTable = () => {
 								<td>
 									<EditItem item={item} />
 								</td>
-								<td>
-									<input value={item.comment} onChange={handleCommentChange} />
-								</td>
+
 								<td>
 									<button onClick={() => deleteItem(item._id)}>Delete</button>
 								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-
-			<div className='table'>
-				<h3>Deletion History</h3>
-
-				<table>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Comments</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						{deleteItems.map((item) => (
-							<tr key={item._id}>
-								<td>{item.name}</td>
-								<td>{item.comment}</td>
 
 								<td>
-									<button onClick={undo}>Undo</button>
+									{/* use + and - to adjust itemstoship and item's quantity dynamically*/}
+									<button
+										onClick={() => {
+											if (item.toship > 0) {
+												setItemsToShip(
+													itemsToShip.filter((item) => item._id !== item._id)
+												);
+												item.quantity++;
+												item.toship--;
+												setItems([...items]);
+											}
+										}}
+									>
+										-
+									</button>
+									<span>{item.toship}</span>
+
+									<button
+										onClick={() => {
+											if (item.quantity > 0) {
+												setItemsToShip([...itemsToShip, item]);
+												item.quantity--;
+												item.toship++;
+												setItems([...items]);
+											}
+										}}
+									>
+										+
+									</button>
 								</td>
 							</tr>
 						))}
 					</tbody>
 				</table>
+
+				<div>
+					{/* create shipping section and dynamically update the item quantity to be shipped of same item */}
+					<h3>Shipping</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>To Shit</th>
+							</tr>
+						</thead>
+						<tbody>
+							{/* rendering the dictionaries inside itemstoship array. */}
+							{itemsToShip.map((item) => (
+								<tr key={item._id}>
+									<td>{item.name}</td>
+									<td>{item.toship}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</>
 	);
