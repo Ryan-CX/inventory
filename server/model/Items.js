@@ -22,6 +22,10 @@ const newItemSchema = new mongoose.Schema(
 			default: 0,
 			required: false,
 		},
+		comment: {
+			type: String,
+			required: false,
+		},
 	},
 	{
 		timestamps: true,

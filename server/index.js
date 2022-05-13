@@ -8,10 +8,13 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 //import itemRoute
 const itemRoute = require('./route/itemRoute');
+//import warehouseRoute
+const warehouseRoute = require('./route/warehouseRoute');
 
 app.use(cors());
 app.use(express.json());
 app.use('/', itemRoute);
+app.use('/', warehouseRoute);
 
 mongoose
 	.connect(process.env.DB_CONNECTION)
