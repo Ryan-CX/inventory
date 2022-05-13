@@ -4,6 +4,18 @@ const axios = require('axios');
 
 const ItemTable = () => {
 	const [items, setItems] = useState([]);
+	const [warehouseList, setWarehouseList] = useState([]);
+	const [assignedWarehouse, setAssignedWarehouse] = useState('');
+
+	const getWarehouseList = async () => {
+		try {
+			const response = await axios.get('http://localhost:5000/warehouse');
+
+			setWarehouseList(response.data);
+		} catch (error) {
+			console.error(error.message);
+		}
+	};
 
 	//get request to get all items
 	const getItems = async () => {
@@ -26,9 +38,14 @@ const ItemTable = () => {
 		}
 	};
 
+	const handleChange = (event) => {
+		setAssignedWarehouse(event.target.value);
+	};
+
 	//get all items on mount
 	useEffect(() => {
 		getItems();
+		getWarehouseList();
 	}, []);
 
 	return (
@@ -45,6 +62,8 @@ const ItemTable = () => {
 							<th>Quantity</th>
 							<th>Edit</th>
 							<th>Delete</th>
+							<th>Warehouse</th>
+							<th>Current Warehouse</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -60,6 +79,41 @@ const ItemTable = () => {
 
 								<td>
 									<button onClick={() => deleteItem(item._id)}>Delete</button>
+								</td>
+								<td>
+									<p>{item.warehouse}</p>
+									<form
+										onSubmit={(event) => {
+											event.preventDefault();
+											axios
+												.put(`http://localhost:5000/items/${item._id}`, {
+													warehouse: assignedWarehouse,
+												})
+												.then(() => {
+													getItems();
+												})
+												.catch((error) => {
+													console.error(error.message);
+												});
+										}}
+									>
+										<select onChange={handleChange}>
+											<option defaultValue={null}>Select Warehouse</option>
+											{warehouseList.map((warehouse) => (
+												<option key={warehouse._id} value={warehouse.location}>
+													{warehouse.location}
+												</option>
+											))}
+										</select>
+										<input type='submit' value='Submit' />
+									</form>
+								</td>
+								<td>
+									{item.warehouse ? (
+										<p>{item.warehouse}</p>
+									) : (
+										<p>No warehouse assigned</p>
+									)}
 								</td>
 							</tr>
 						))}

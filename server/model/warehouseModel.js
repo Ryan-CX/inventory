@@ -3,6 +3,7 @@ const wareHouseSchema = new mongoose.Schema({
 	location: {
 		type: String,
 		required: true,
+		default: '',
 	},
 });
 

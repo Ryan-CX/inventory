@@ -17,12 +17,8 @@ const newItemSchema = new mongoose.Schema(
 			type: Number,
 			required: true,
 		},
-		toship: {
-			type: Number,
-			default: 0,
-			required: false,
-		},
-		comment: {
+
+		warehouse: {
 			type: String,
 			required: false,
 		},
