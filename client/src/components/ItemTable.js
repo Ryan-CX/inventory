@@ -4,7 +4,6 @@ const axios = require('axios');
 
 const ItemTable = () => {
 	const [items, setItems] = useState([]);
-	const [itemsToShip, setItemsToShip] = useState([]);
 
 	//get request to get all items
 	const getItems = async () => {
@@ -22,16 +21,6 @@ const ItemTable = () => {
 			const response = await axios.delete(`http://localhost:5000/items/${id}`);
 
 			getItems();
-		} catch (error) {
-			console.error(error.message);
-		}
-	};
-
-	const saveComment = async (id, comment) => {
-		try {
-			const response = await axios.put(`http://localhost:5000/items/${id}`, {
-				comment: comment,
-			});
 		} catch (error) {
 			console.error(error.message);
 		}

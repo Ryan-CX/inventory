@@ -1,37 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import EditItem from './EditItem';
 const axios = require('axios');
 
-const ItemTable = () => {
-	const [items, setItems] = useState([]);
-	const [itemsToShip, setItemsToShip] = useState([]);
+const WareHouseTable = () => {
+	const [warehouses, setWarehouse] = useState([]);
+
+	//request to save new warehouse name to warehouses array
+	const saveWarehouse = async (name) => {
+		try {
+			const response = await axios.post('http://localhost:5000/warehouse', {
+				location: name,
+			});
+			setWarehouse(response.data);
+		} catch (error) {
+			console.error(error.message);
+		}
+	};
 
 	//get request to get all items
-	const getItems = async () => {
+	const getWarehouse = async () => {
 		try {
-			const response = await axios.get('http://localhost:5000/items');
-			setItems(response.data);
-		} catch (error) {
-			console.error(error.message);
-		}
-	};
-
-	//delete request to delete item, and add deleted item to deleteItems array
-	const deleteItem = async (id) => {
-		try {
-			const response = await axios.delete(`http://localhost:5000/items/${id}`);
-
-			getItems();
-		} catch (error) {
-			console.error(error.message);
-		}
-	};
-
-	const saveComment = async (id, comment) => {
-		try {
-			const response = await axios.put(`http://localhost:5000/items/${id}`, {
-				comment: comment,
-			});
+			const response = await axios.get('http://localhost:5000/warehouse');
+			setWarehouse(response.data);
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -39,39 +28,35 @@ const ItemTable = () => {
 
 	//get all items on mount
 	useEffect(() => {
-		getItems();
+		getWarehouse();
 	}, []);
 
 	return (
 		<>
+			{/* input field to enter new warehouse names and save to database and display in the table below */}
+			<div>
+				<form onSubmit={saveWarehouse}>
+					<input
+						type='text'
+						placeholder='Enter warehouse name'
+						onChange={warehouses}
+					/>
+					<button type='submit'>Save</button>
+				</form>
+			</div>
 			<div className='table'>
-				<h3>Inventory Table</h3>
-
+				<h3>Warehouse Table</h3>
+				{/* display warehouses location in the warehouses array */}
 				<table>
 					<thead>
 						<tr>
-							<th>Name</th>
-							<th>Description</th>
-							<th>Price</th>
-							<th>Quantity</th>
-							<th>Edit</th>
-							<th>Delete</th>
+							<th>Location</th>
 						</tr>
 					</thead>
 					<tbody>
-						{items.map((item) => (
-							<tr key={item._id}>
-								<td>{item.name}</td>
-								<td>{item.description}</td>
-								<td>${item.price}</td>
-								<td>{item.quantity}</td>
-								<td>
-									<EditItem item={item} />
-								</td>
-
-								<td>
-									<button onClick={() => deleteItem(item._id)}>Delete</button>
-								</td>
+						{warehouses.map((warehouse) => (
+							<tr key={warehouse._id}>
+								<td>{warehouse.location}</td>
 							</tr>
 						))}
 					</tbody>
@@ -81,4 +66,4 @@ const ItemTable = () => {
 	);
 };
 
-export default ItemTable;
+export default WareHouseTable;
